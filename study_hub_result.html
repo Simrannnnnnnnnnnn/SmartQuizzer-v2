@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Study Bundle | SmartQuizzer 📚</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <style>
+        :root { --primary-gold: #FFB300; --active-recall-blue: #3b82f6; }
+        body { font-family: 'Fredoka', sans-serif; background: #f8fafc; color: #1e293b; }
+        
+        .glass-card { border-radius: 24px; background: white; border: 1px solid #e2e8f0; transition: 0.3s; }
+        .border-top-gold { border-top: 6px solid var(--primary-gold) !important; }
+
+        /* 3D Flashcards */
+        .flashcard { perspective: 1000px; height: 260px; cursor: pointer; margin-bottom: 25px; }
+        .flashcard-inner { 
+            position: relative; width: 100%; height: 100%; 
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
+            transform-style: preserve-3d; 
+        }
+        .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+        .flashcard-front, .flashcard-back { 
+            position: absolute; width: 100%; height: 100%; 
+            backface-visibility: hidden; border-radius: 24px; 
+            display: flex; flex-direction: column; align-items: center; 
+            justify-content: center; padding: 30px; border: 2px solid #000;
+        }
+        .flashcard-front { background: white; }
+        .flashcard-back { background: var(--primary-gold); transform: rotateY(180deg); color: #000; }
+
+        /* Shorthand Notes */
+        .note-card { 
+            border-radius: 18px; border: 1px solid #f1f5f9; 
+            transition: 0.3s; background: white;
+        }
+        .note-card:hover { border-color: var(--primary-gold); transform: translateX(5px); }
+        
+        .deep-dive-btn {
+            background: #f1f5f9; color: #1e293b; border: none;
+            font-weight: 700; border-radius: 50px; padding: 5px 15px; font-size: 0.8rem;
+        }
+
+        .mnemonic-box {
+            background: #fff9db; border-left: 6px solid var(--primary-gold);
+            border-radius: 20px; font-style: italic; line-height: 1.6;
+        }
+
+        @media print { .no-print { display: none !important; } }
+    </style>
+</head>
+<body>
+
+<div class="container py-5 animate__animated animate__fadeIn">
+    <div class="d-flex justify-content-between align-items-center mb-5 no-print">
+        <div>
+            <h1 class="fw-bold" style="color: var(--primary-gold);">✨ Your AI Study Bundle</h1>
+            <p class="text-muted fs-5">Active Recall Mode: <b>Enabled</b></p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-dark rounded-pill px-4 fw-bold shadow-sm">
+                <i class="fa-solid fa-brain me-2 text-warning"></i>Case Challenge
+            </button>
+            <button onclick="window.print()" class="btn btn-outline-dark rounded-pill px-4 fw-bold">
+                <i class="fa-solid fa-file-pdf me-2"></i>Export
+            </button>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="glass-card p-4 mb-4 border-top-gold shadow-sm">
+                <h4 class="fw-bold mb-4"><i class="fa-solid fa-feather-pointed text-warning me-2"></i>Shorthand Notes</h4>
+                
+                <div class="note-card p-3 mb-3 shadow-sm border">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <i class="fa-solid fa-bolt-lightning text-warning me-3"></i>
+                            <span class="fw-bold">Mitochondria = Powerhouse (ATP Synthesis)</span>
+                        </div>
+                        <button class="deep-dive-btn" onclick="showDive('dive-1')">🚀 Deep Dive</button>
+                    </div>
+                    <div id="dive-1" class="d-none mt-3 p-3 bg-light rounded-4 small border-start border-dark border-4 animate__animated animate__fadeIn">
+                        <b>AI Analysis:</b> Mitochondria converts chemical energy from food into adenosine triphosphate (ATP) through oxidative phosphorylation.
+                    </div>
+                </div>
+
+                <div class="note-card p-3 mb-3 shadow-sm border">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <i class="fa-solid fa-bolt-lightning text-warning me-3"></i>
+                            <span class="fw-bold">Ribosomes = Protein Factories</span>
+                        </div>
+                        <button class="deep-dive-btn">🚀 Deep Dive</button>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="glass-card p-4 shadow-sm" style="background: #fffdf5;">
+                <h4 class="fw-bold mb-3"><i class="fa-solid fa-lightbulb text-warning me-2"></i>Memory Palace Story</h4>
+                <div class="mnemonic-box p-4 shadow-sm">
+                    "Imagine a huge <b>Powerhouse</b> factory (Mitochondria) where workers are making <b>Energy Batteries</b> (ATP) while reading <b>Protein Recipes</b> (Ribosomes)."
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <h4 class="fw-bold mb-4"><i class="fa-solid fa-layer-group text-primary me-2"></i>Active Recall</h4>
+            <div style="max-height: 80vh; overflow-y: auto; padding-right: 10px;" class="custom-scrollbar">
+                
+                <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <span class="badge bg-light text-muted border rounded-pill mb-3">QUESTION</span>
+                            <h5 class="fw-bold text-center">What is the main function of Mitochondria?</h5>
+                            <small class="mt-auto text-muted"><i class="fa-solid fa-hand-pointer"></i> Click to Flip</small>
+                        </div>
+                        <div class="flashcard-back">
+                            <span class="badge bg-white text-dark border rounded-pill mb-3">ANSWER</span>
+                            <p class="fw-bold text-center fs-5">To produce energy (ATP) through cellular respiration.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <span class="badge bg-light text-muted border rounded-pill mb-3">QUESTION</span>
+                            <h5 class="fw-bold text-center">Where does Protein Synthesis happen?</h5>
+                            <small class="mt-auto text-muted"><i class="fa-solid fa-hand-pointer"></i> Click to Flip</small>
+                        </div>
+                        <div class="flashcard-back">
+                            <span class="badge bg-white text-dark border rounded-pill mb-3">ANSWER</span>
+                            <p class="fw-bold text-center fs-5">In the Ribosomes.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showDive(id) {
+        document.getElementById(id).classList.toggle('d-none');
+    }
+</script>
+
+</body>
+</html>
