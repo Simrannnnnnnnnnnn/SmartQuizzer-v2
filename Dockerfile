@@ -1,5 +1,5 @@
-# Python 3.10 base image
-FROM python:3.10
+# Python 3.10 slim base image
+FROM python:3.10-slim
 
 # 1. System dependencies install karo (EasyOCR aur OpenCV ke liye zaruri hain)
 RUN apt-get update && apt-get install -y \
@@ -7,22 +7,27 @@ RUN apt-get update && apt-get install -y \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Working directory set karo
-WORKDIR /app
+# 2. HF Spaces ke liye non-root user banana ZAROORI hai
+RUN useradd -m -u 1000 user
+USER user
+ENV HOME=/home/user \
+    PATH=/home/user/.local/bin:$PATH
 
-# 3. Requirements file copy karke install karo
-COPY requirements.txt .
+# 3. Working directory set karo
+WORKDIR $HOME/app
+
+# 4. Requirements file copy karke install karo
+COPY --chown=user requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 4. EasyOCR models download karo (taaki runtime par slow na ho)
+# 5. EasyOCR models download karo (taaki runtime par slow na ho)
 RUN python -c "import easyocr; reader = easyocr.Reader(['en'])"
 
-# 5. Baaki saara code copy karo (backend folder, main.py, etc.)
-COPY . .
+# 6. Baaki saara code copy karo
+COPY --chown=user . .
 
-# 6. Hugging Face ka default port expose karo
+# 7. Hugging Face ka default port expose karo
 EXPOSE 7860
 
-# 7. Gunicorn production server se run karo
-# Note: 'main:app' matlab main.py file mein 'app' naam ka Flask object hai
+# 8. Gunicorn production server se run karo
 CMD ["gunicorn", "-b", "0.0.0.0:7860", "main:app", "--timeout", "120"]
